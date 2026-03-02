@@ -10,6 +10,9 @@ use Symfony\Component\HttpFoundation\Response;
 class PersistedFragmentsMiddleware {
     public function handle(Request $request, Closure $next): Response
     {
+
+        if(($request->hasHeader('Allow-Bypass-PQL') && $request->header('Allow-Bypass-PQL') == config('app.gql_bypass_password')) || app()->environment('local') ) return $next($request);
+
         $operationName = $request->input('operationName');
         if (!$operationName) {
             return response()->json(['errors' => [['message' => 'Missing operationName']]], 403);
@@ -32,13 +35,11 @@ class PersistedFragmentsMiddleware {
 
             while ($foundNew) {
                 $foundNew = false;
-
                 foreach ($fragmentFiles as $file) {
                     $fName = $file->getBasename('.graphql');
                     if (isset($addedFragments[$fName])) continue;
                     $fragmentContent = file_get_contents($file->getPathname());
                     $pattern = '/\.\.\.\s*' . preg_quote($fName, '/') . '\b/';
-
                     if (preg_match($pattern, $queryBody)) {
                         $queryBody .= "\n" . $fragmentContent;
                         $addedFragments[$fName] = true;
@@ -47,8 +48,8 @@ class PersistedFragmentsMiddleware {
                     }
                 }
             }
-
         }
+
         $request->merge([
             'query' => $queryBody
         ]);
