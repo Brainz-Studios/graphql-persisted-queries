@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
-class PersistedFragmentsMiddleware {
+class PersistedQueryMiddleware {
     public function handle(Request $request, Closure $next): Response
     {
 
