@@ -1,5 +1,5 @@
 {
-  "name": "tvoje-jmeno/persisted-fragments",
+  "name": "brainz-studios/graphql-persisted-queries",
   "autoload": {
     "psr-4": {
       "BrainzStudios\\GraphQLPersistedQueries\\": "src/"
